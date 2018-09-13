@@ -1,1 +1,2 @@
-Minesweeper
+# Minesweeper
+Minesweeper Game made with Java
