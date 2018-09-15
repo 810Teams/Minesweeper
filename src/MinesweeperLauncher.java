@@ -3,6 +3,8 @@
  * by Teerapat Kraisrisirikul
  */
 
+import javafx.scene.layout.BorderRepeat;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -11,17 +13,20 @@ public class MinesweeperLauncher {
     private int rows, columns, mines;
     private MinesweeperGUI game;
     private JFrame frame;
-    private JPanel settingsPanel, menuPanel;
+    private JPanel settingsPanelArea, settingsPanel, menuPanel;
     private JLabel rowsLabel, columnsLabel, minesLabel;
     private JTextField rowsField, columnsField, minesField;
     private JButton startButton, exitButton;
 
     public MinesweeperLauncher() {
         // Constructor
+        // Frame and Panels
         frame = new JFrame("Minesweeper Launcher");
+        settingsPanelArea = new JPanel();
         settingsPanel = new JPanel(new GridLayout(3, 2));
         menuPanel = new JPanel(new GridLayout(1, 2));
 
+        // Labels
         rowsLabel = new JLabel("Rows:");
         columnsLabel = new JLabel("Columns:");
         minesLabel = new JLabel("Mines:");
@@ -30,6 +35,7 @@ public class MinesweeperLauncher {
         columnsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         minesLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
+        // Text Fields
         rowsField = new JTextField();
         columnsField = new JTextField();
         minesField = new JTextField();
@@ -38,6 +44,11 @@ public class MinesweeperLauncher {
         columnsField.setFont(new Font("Arial", Font.PLAIN, 14));
         minesField.setFont(new Font("Arial", Font.PLAIN, 14));
 
+        rowsField.setToolTipText("Must be an integer at least 10.");
+        columnsField.setToolTipText("Must be an integer at least 10.");
+        minesField.setToolTipText("Must be an integer at least 1 and not cover more than 25% of the board.");
+
+        // Buttons
         startButton = new JButton("Start");
         exitButton = new JButton("Exit");
 
@@ -47,23 +58,25 @@ public class MinesweeperLauncher {
         startButton.addActionListener(new ButtonListener());
         exitButton.addActionListener(new ButtonListener());
 
+        // Adding Components
         settingsPanel.add(rowsLabel);
         settingsPanel.add(rowsField);
         settingsPanel.add(columnsLabel);
         settingsPanel.add(columnsField);
         settingsPanel.add(minesLabel);
         settingsPanel.add(minesField);
+        settingsPanelArea.add(settingsPanel);
 
         menuPanel.add(startButton);
         menuPanel.add(exitButton);
 
-        frame.add(settingsPanel);
+        frame.add(settingsPanelArea);
         frame.add(menuPanel, BorderLayout.SOUTH);
     }
 
     public void run() {
         // Object Method: Run launcher
-        frame.setSize(275, 175);
+        frame.setSize(250, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -78,6 +91,7 @@ public class MinesweeperLauncher {
 
     private boolean checkValid() {
         // Object Method: Check valid
+        // Step I: Check Type Error
         try {
             rows = Integer.parseInt(rowsField.getText());
         } catch (Exception e) {
@@ -99,6 +113,7 @@ public class MinesweeperLauncher {
             return false;
         }
 
+        // Step II: Check appropriate values
         if (rows < 10) {
             JOptionPane.showMessageDialog(null, "Row amount must be at least 10.");
             return false;
@@ -108,8 +123,8 @@ public class MinesweeperLauncher {
         } else if (mines < 1) {
             JOptionPane.showMessageDialog(null, "Mine amount must be at least 1.");
             return false;
-        } else if (mines > (int) (rows * columns / 5)) {
-            JOptionPane.showMessageDialog(null, "Mine amount must not cover over 20% (" + (int) (rows * columns / 5) + ") of the board.");
+        } else if (mines > (int) (rows * columns / 4)) {
+            JOptionPane.showMessageDialog(null, "Mine amount must not cover over 25% of the board (" + mines + "/" + (int) (rows * columns / 4) + ").");
             return false;
         }
         return true;

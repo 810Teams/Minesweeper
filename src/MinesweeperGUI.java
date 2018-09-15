@@ -9,12 +9,14 @@ import javax.swing.*;
 import javax.imageio.ImageIO;
 
 public class MinesweeperGUI extends MinesweeperCore {
-    private final String MINE_IMAGE = "resources/mine.png";
-    private final String FLAG_IMAGE = "resources/flag.png";
-    private boolean isFlagMode;
-    private int gameStatus;
-    private JFrame gameFrame;
-    private JPanel boardPanel, menuZone, menuBox, menu;
+    private static final String MINE_ICON = "resources/mine.png";
+    private static final String FLAG_ICON = "resources/flag.png";
+    private static final Color GREEN = new Color(23, 199, 35);
+    private static final Color RED = new Color(180, 17, 2);
+    private static final Color BLUE = new Color(13, 141, 215);
+
+    private JFrame frame;
+    private JPanel boardPanel, menuZone, menu;
     private JTextField messageBox;
     private JButton[][] boardCell;
     private JButton flagButton, restartButton, exitButton;
@@ -22,15 +24,12 @@ public class MinesweeperGUI extends MinesweeperCore {
     public MinesweeperGUI(int rows, int columns, int mines) {
         // Constructor
         super(rows, columns, mines);
-        isFlagMode = false;
-        gameStatus = 0;
         boardPanel = new JPanel(new GridLayout(rows, columns));
         menuZone = new JPanel(new GridLayout(2, 1));
-        menuBox = new JPanel();
         menu = new JPanel(new GridLayout(1, 3));
         messageBox = new JTextField("Welcome to Minesweeper!");
         boardCell = new JButton[rows][columns];
-        flagButton = new JButton("Flag Mode: OFF");
+        flagButton = new JButton("Flag: OFF");
         restartButton = new JButton("Restart");
         exitButton = new JButton("Exit");
 
@@ -43,9 +42,9 @@ public class MinesweeperGUI extends MinesweeperCore {
             }
         }
 
-        gameFrame = new JFrame("Minesweeper");
+        frame = new JFrame("Minesweeper");
 
-        flagButton.setForeground(new Color(180, 17, 2));
+        flagButton.setForeground(MinesweeperGUI.RED);
         flagButton.setFont(new Font("Arial", Font.PLAIN, 14));
         restartButton.setFont(new Font("Arial", Font.PLAIN, 14));
         exitButton.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -54,29 +53,28 @@ public class MinesweeperGUI extends MinesweeperCore {
         restartButton.addActionListener(new ButtonListener());
         exitButton.addActionListener(new ButtonListener());
 
-        messageBox.setFont(new Font("Arial", Font.PLAIN, 18));
+        messageBox.setFont(new Font("Arial", Font.PLAIN, 16));
         messageBox.setEditable(false);
         messageBox.setHorizontalAlignment(JTextField.CENTER);
-        messageBox.setForeground(new Color(13, 141, 215));
+        messageBox.setForeground(MinesweeperGUI.BLUE);
 
         menu.add(flagButton);
         menu.add(restartButton);
         menu.add(exitButton);
-        menuBox.add(menu, BorderLayout.CENTER);
 
         menuZone.add(messageBox);
-        menuZone.add(menuBox);
+        menuZone.add(menu);
 
-        gameFrame.add(boardPanel);
-        gameFrame.add(menuZone, BorderLayout.SOUTH);
+        frame.add(boardPanel);
+        frame.add(menuZone, BorderLayout.SOUTH);
     }
 
     public void run() {
         // Object Method: Run the game
-        gameFrame.setSize(30 * columns, 30 * rows + 100);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setLocationRelativeTo(null);
-        gameFrame.setVisible(true);
+        frame.setSize(30 * columns, 30 * rows + 100);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     private void clickCell(int i, int j) {
@@ -85,14 +83,22 @@ public class MinesweeperGUI extends MinesweeperCore {
             return; // DEBUG: Duplicated cell revealing
         revealCell(i, j);
         if (boardData[i][j] == 0) {
-            clickCell(max(i - 1, 0), max(j - 1, 0));
-            clickCell(max(i - 1, 0), j);
-            clickCell(max(i - 1, 0), min(j + 1, columns - 1));
-            clickCell(i, min(j + 1, columns - 1));
-            clickCell(min(i + 1, rows - 1), min(j + 1, columns - 1));
-            clickCell(min(i + 1, rows - 1), j);
-            clickCell(min(i + 1, rows - 1), max(j - 1, 0));
-            clickCell(i, max(j - 1, 0));
+            if (i - 1 >= 0 && j - 1 >= 0)
+                clickCell(i - 1, j - 1);
+            if (i - 1 >= 0)
+                clickCell(i - 1, j);
+            if (i - 1 >= 0 && j + 1 < columns)
+                clickCell(i - 1, j + 1);
+            if (j + 1 < columns)
+                clickCell(i, j + 1);
+            if (i + 1 < rows && j + 1 < columns)
+                clickCell(i + 1, j + 1);
+            if (i + 1 < rows)
+                clickCell(i + 1, j);
+            if (i + 1 < rows && j - 1 >= 0)
+                clickCell(i + 1, j - 1);
+            if (j - 1 >= 0)
+                clickCell(i, j - 1);
         }
     }
 
@@ -110,7 +116,7 @@ public class MinesweeperGUI extends MinesweeperCore {
             boardCell[i][j].setText(" ");
         } else if (boardData[i][j] == -1) {
             try {
-                Image img = ImageIO.read(getClass().getResource(MINE_IMAGE));
+                Image img = ImageIO.read(getClass().getResource(MINE_ICON));
                 boardCell[i][j].setIcon(new ImageIcon(img));
             } catch (Exception ex) {
                 System.out.println(ex);
@@ -125,7 +131,7 @@ public class MinesweeperGUI extends MinesweeperCore {
         if (boardCell[i][j].getIcon() == null && flags > 0) {
             flags--;
             try {
-                Image img = ImageIO.read(getClass().getResource(FLAG_IMAGE));
+                Image img = ImageIO.read(getClass().getResource(FLAG_ICON));
                 boardCell[i][j].setIcon(new ImageIcon(img));
                 boardCell[i][j].setEnabled(true);
             } catch (Exception ex) {
@@ -175,35 +181,36 @@ public class MinesweeperGUI extends MinesweeperCore {
     }
 
     private void updateFlagButton() {
-        if (isFlagMode) {
-            flagButton.setText("Flag Mode: ON");
-            flagButton.setForeground(new Color(23, 199, 35));
+        // Object Method: Update Flag Button
+        if (flagMode) {
+            flagButton.setText("Flag: ON");
+            flagButton.setForeground(MinesweeperGUI.GREEN);
         } else {
-            flagButton.setText("Flag Mode: OFF");
-            flagButton.setForeground(new Color(180, 17, 2));
+            flagButton.setText("Flag: OFF");
+            flagButton.setForeground(MinesweeperGUI.RED);
         }
     }
 
     private void resetMessage() {
         // Object Method: Reset message
         messageBox.setText("Welcome to Minesweeper!");
-        messageBox.setForeground(new Color(13, 141, 215));
+        messageBox.setForeground(MinesweeperGUI.BLUE);
     }
 
     private void updateFlagsMessage() {
         // Object Method: Update remaining flags message
         messageBox.setText("Flags Remaining: " + flags);
-        messageBox.setForeground(new Color(13, 141, 215));
+        messageBox.setForeground(MinesweeperGUI.BLUE);
     }
 
     private void updateGameStatusMessage() {
         // Object Method: Update remaining flags message
         if (gameStatus == 1) {
             messageBox.setText("You win!");
-            messageBox.setForeground(new Color(23, 199, 35));
+            messageBox.setForeground(MinesweeperGUI.GREEN);
         } else if (gameStatus == 2) {
             messageBox.setText("You lose!");
-            messageBox.setForeground(new Color(180, 17, 2));
+            messageBox.setForeground(MinesweeperGUI.RED);
         }
     }
 
@@ -216,7 +223,7 @@ public class MinesweeperGUI extends MinesweeperCore {
                 boardCell[i][j].setEnabled(true);
             }
         }
-        isFlagMode = false;
+        flagMode = false;
         updateFlagButton();
         resetFlags();
         resetMessage();
@@ -229,19 +236,12 @@ public class MinesweeperGUI extends MinesweeperCore {
         System.exit(0);
     }
 
-    public void debugGUI() {
-        // Object Method: Debug
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                revealCell(i, j);
-    }
-
     private class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
                     if (e.getSource() == boardCell[i][j] && gameStatus == 0) {
-                        if (isFlagMode)
+                        if (flagMode)
                             flagCell(i, j);
                         else
                             clickCell(i, j);
@@ -254,7 +254,7 @@ public class MinesweeperGUI extends MinesweeperCore {
             }
 
             if (e.getSource() == flagButton) {
-                isFlagMode = !isFlagMode;
+                flagMode = !flagMode;
                 updateFlagButton();
             }
 

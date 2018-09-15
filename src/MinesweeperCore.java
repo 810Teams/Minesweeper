@@ -4,8 +4,9 @@
  */
 
 public abstract class MinesweeperCore {
-    protected int rows, columns, mines, flags;
-    public int[][] boardData;
+    protected int rows, columns, mines, flags, gameStatus;
+    protected int[][] boardData;
+    protected boolean flagMode;
 
     protected MinesweeperCore(int rows, int columns, int mines) {
         setRows(rows);
@@ -14,6 +15,8 @@ public abstract class MinesweeperCore {
         resetFlags();
         createBoardData();
         randomBoardData();
+        gameStatus = 0;
+        flagMode = false;
     }
 
     protected boolean setRows(int rows) {
@@ -36,7 +39,7 @@ public abstract class MinesweeperCore {
 
     protected boolean setMines(int mines) {
         // Object Method: Set Mines
-        if (mines > 0 && mines <= columns * rows / 2) {
+        if (mines > 0 && mines <= columns * rows / 4) {
             this.mines = mines;
             return true;
         }
@@ -110,28 +113,5 @@ public abstract class MinesweeperCore {
                 minesAround++; // W
 
         return minesAround;
-    }
-
-    protected static int max(int a, int b) {
-        return (a > b) ? a : b;
-    }
-
-    protected static int min(int a, int b) {
-        return (a < b) ? a : b;
-    }
-
-    public void debug() {
-        // Object Method: Debug
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (boardData[i][j] == 0)
-                    System.out.print("   ");
-                else if (boardData[i][j] == -1)
-                    System.out.print("  X");
-                else
-                    System.out.printf("%3d", boardData[i][j]);
-            }
-            System.out.println();
-        }
     }
 }
