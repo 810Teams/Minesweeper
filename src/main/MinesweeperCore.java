@@ -1,7 +1,11 @@
 /**
- *  MinesweeperCore class
- *  by Teerapat Kraisrisirikul
+ * `MinesweeperCore` Abstract Class
+ * by Teerapat Kraisrisirikul
  */
+
+package main;
+
+import javax.swing.*;
 
 public abstract class MinesweeperCore {
     protected int rows, columns, mines, flags, gameStatus;
@@ -53,21 +57,26 @@ public abstract class MinesweeperCore {
 
     protected void createBoardData() {
         // Object Method: Create Board Data
-        if (setColumns(this.columns) && setRows(this.rows) && setMines(this.mines))
+        if (setColumns(this.columns) && setRows(this.rows) && setMines(this.mines)) {
             boardData = new int[rows][columns];
-        else
+        } else {
+            JOptionPane.showMessageDialog(null, "Unexpected Error: Board Data Creation Error");
             System.exit(0);
+        }
+
     }
 
     protected void randomBoardData() {
         // Object Method: Random Board Data
         int minesLeft = this.mines;
 
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 boardData[i][j] = 0;
+            }
+        }
 
-        do {
+        while (minesLeft > 0) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
                     if ((int) (Math.random() * columns * rows) <= mines && minesLeft > 0 && boardData[i][j] != -1) {
@@ -76,42 +85,49 @@ public abstract class MinesweeperCore {
                     }
                 }
             }
-        } while (minesLeft > 0);
+        }
 
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                if (boardData[i][j] != -1)
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (boardData[i][j] != -1) {
                     boardData[i][j] = countAround(i, j);
+                }
+            }
+        }
     }
 
     protected int countAround(int i, int j) {
         int minesAround = 0;
 
-        if (i - 1 >= 0 && j - 1 >= 0)
+        if (isValidCell(i - 1, j - 1))
             if (boardData[i - 1][j - 1] == -1)
                 minesAround++; // NW
-        if (i - 1 >= 0)
+        if (isValidCell(i - 1, j))
             if (boardData[i - 1][j] == -1)
                 minesAround++; // N
-        if (i - 1 >= 0 && j + 1 < columns)
+        if (isValidCell(i - 1, j + 1))
             if (boardData[i - 1][j + 1] == -1)
                 minesAround++; // NE
-        if (j + 1 < columns)
+        if (isValidCell(i, j + 1))
             if (boardData[i][j + 1] == -1)
                 minesAround++; // E
-        if (i + 1 < rows && j + 1 < columns)
+        if (isValidCell(i + 1, j + 1))
             if (boardData[i + 1][j + 1] == -1)
                 minesAround++; // SE
-        if (i + 1 < rows)
+        if (isValidCell(i + 1, j))
             if (boardData[i + 1][j] == -1)
                 minesAround++; // S
-        if (i + 1 < rows && j - 1 >= 0)
+        if (isValidCell(i + 1, j - 1))
             if (boardData[i + 1][j - 1] == -1)
                 minesAround++; // SW
-        if (j - 1 >= 0)
+        if (isValidCell(i, j - 1))
             if (boardData[i][j - 1] == -1)
                 minesAround++; // W
 
         return minesAround;
+    }
+
+    protected boolean isValidCell(int i, int j) {
+        return i >= 0 && j >= 0 && i < rows && j < columns;
     }
 }

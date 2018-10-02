@@ -1,7 +1,9 @@
 /**
- * MinesweeperLauncher class
+ * `MinesweeperLauncher` Class
  * by Teerapat Kraisrisirikul
  */
+
+package main;
 
 import javafx.scene.layout.BorderRepeat;
 
@@ -9,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class MinesweeperLauncher {
+public final class MinesweeperLauncher {
     private int rows, columns, mines;
     private MinesweeperGUI game;
     private JFrame frame;
@@ -94,21 +96,21 @@ public class MinesweeperLauncher {
         // Step I: Check Type Error
         try {
             rows = Integer.parseInt(rowsField.getText());
-        } catch (Exception e) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Invalid row amount format.");
             return false;
         }
 
         try {
             columns = Integer.parseInt(columnsField.getText());
-        } catch (Exception e) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Invalid column amount format.");
             return false;
         }
 
         try {
             mines = Integer.parseInt(minesField.getText());
-        } catch (Exception e) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Invalid mine amount format.");
             return false;
         }
@@ -137,13 +139,15 @@ public class MinesweeperLauncher {
 
     private class ButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == startButton)
-                if (checkValid())
+            if (e.getSource() == startButton) {
+                if (checkValid()) {
                     start();
-
-            if (e.getSource() == exitButton)
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0)
+                }
+            } else if (e.getSource() == exitButton) {
+                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
                     exit();
+                }
+            }
         }
     }
 }

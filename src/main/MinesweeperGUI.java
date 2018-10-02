@@ -1,7 +1,9 @@
 /**
- * MinesweeperGUI class
+ * `MinesweeperGUI` Class
  * by Teerapat Kraisrisirikul
  */
+
+package main;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -81,23 +83,25 @@ public class MinesweeperGUI extends MinesweeperCore {
         // Object Method: Click cell
         if (isRevealed(i, j))
             return; // DEBUG: Duplicated cell revealing
+
         revealCell(i, j);
+
         if (boardData[i][j] == 0) {
-            if (i - 1 >= 0 && j - 1 >= 0)
+            if (isValidCell(i - 1, j - 1))
                 clickCell(i - 1, j - 1);
-            if (i - 1 >= 0)
+            if (isValidCell(i - 1, j))
                 clickCell(i - 1, j);
-            if (i - 1 >= 0 && j + 1 < columns)
+            if (isValidCell(i - 1, j + 1))
                 clickCell(i - 1, j + 1);
-            if (j + 1 < columns)
+            if (isValidCell(i, j + 1))
                 clickCell(i, j + 1);
-            if (i + 1 < rows && j + 1 < columns)
+            if (isValidCell(i + 1, j + 1))
                 clickCell(i + 1, j + 1);
-            if (i + 1 < rows)
+            if (isValidCell(i + 1, j))
                 clickCell(i + 1, j);
-            if (i + 1 < rows && j - 1 >= 0)
+            if (isValidCell(i + 1, j - 1))
                 clickCell(i + 1, j - 1);
-            if (j - 1 >= 0)
+            if (isValidCell(i, j - 1))
                 clickCell(i, j - 1);
         }
     }
@@ -145,9 +149,7 @@ public class MinesweeperGUI extends MinesweeperCore {
 
     private boolean isRevealed(int i, int j) {
         // Object Method: Check if the cell is revealed
-        if (!boardCell[i][j].isEnabled())
-            return true;
-        return false;
+        return !boardCell[i][j].isEnabled();
     }
 
     private void updateGameStatus() {
@@ -184,33 +186,33 @@ public class MinesweeperGUI extends MinesweeperCore {
         // Object Method: Update Flag Button
         if (flagMode) {
             flagButton.setText("Flag: ON");
-            flagButton.setForeground(MinesweeperGUI.GREEN);
+            flagButton.setForeground(GREEN);
         } else {
             flagButton.setText("Flag: OFF");
-            flagButton.setForeground(MinesweeperGUI.RED);
+            flagButton.setForeground(RED);
         }
     }
 
     private void resetMessage() {
         // Object Method: Reset message
         messageBox.setText("Welcome to Minesweeper!");
-        messageBox.setForeground(MinesweeperGUI.BLUE);
+        messageBox.setForeground(BLUE);
     }
 
     private void updateFlagsMessage() {
         // Object Method: Update remaining flags message
         messageBox.setText("Flags Remaining: " + flags);
-        messageBox.setForeground(MinesweeperGUI.BLUE);
+        messageBox.setForeground(BLUE);
     }
 
     private void updateGameStatusMessage() {
         // Object Method: Update remaining flags message
         if (gameStatus == 1) {
             messageBox.setText("You win!");
-            messageBox.setForeground(MinesweeperGUI.GREEN);
+            messageBox.setForeground(GREEN);
         } else if (gameStatus == 2) {
             messageBox.setText("You lose!");
-            messageBox.setForeground(MinesweeperGUI.RED);
+            messageBox.setForeground(RED);
         }
     }
 
@@ -256,14 +258,13 @@ public class MinesweeperGUI extends MinesweeperCore {
             if (e.getSource() == flagButton) {
                 flagMode = !flagMode;
                 updateFlagButton();
-            }
-
-            if (e.getSource() == restartButton)
+            } else if (e.getSource() == restartButton) {
                 restart();
-
-            if (e.getSource() == exitButton)
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0)
+            } else if (e.getSource() == exitButton) {
+                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
                     exit();
+                }
+            }
         }
     }
 }
