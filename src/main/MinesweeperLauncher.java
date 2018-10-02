@@ -1,11 +1,9 @@
 /**
- * `MinesweeperLauncher` Class
- * by Teerapat Kraisrisirikul
+ *  `MinesweeperLauncher` Class
+ *   by Teerapat Kraisrisirikul
  */
 
 package main;
-
-import javafx.scene.layout.BorderRepeat;
 
 import java.awt.*;
 import java.awt.event.*;

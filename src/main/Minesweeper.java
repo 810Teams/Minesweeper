@@ -1,6 +1,6 @@
 /**
- * `Minesweeper` Class (Main Method)
- * by Teerapat Kraisrisirikul
+ *  `Minesweeper` Main Class
+ *   by Teerapat Kraisrisirikul
  */
 
 package main;

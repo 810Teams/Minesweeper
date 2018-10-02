@@ -1,11 +1,9 @@
 /**
- * `MinesweeperCore` Abstract Class
- * by Teerapat Kraisrisirikul
+ *  `MinesweeperCore` Abstract Class
+ *   by Teerapat Kraisrisirikul
  */
 
 package main;
-
-import javax.swing.*;
 
 public abstract class MinesweeperCore {
     protected int rows, columns, mines, flags, gameStatus;
@@ -60,7 +58,6 @@ public abstract class MinesweeperCore {
         if (setColumns(this.columns) && setRows(this.rows) && setMines(this.mines)) {
             boardData = new int[rows][columns];
         } else {
-            JOptionPane.showMessageDialog(null, "Unexpected Error: Board Data Creation Error");
             System.exit(0);
         }
 

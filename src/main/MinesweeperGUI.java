@@ -1,6 +1,6 @@
 /**
- * `MinesweeperGUI` Class
- * by Teerapat Kraisrisirikul
+ *  `MinesweeperGUI` Class
+ *   by Teerapat Kraisrisirikul
  */
 
 package main;
