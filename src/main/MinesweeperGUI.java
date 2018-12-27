@@ -1,16 +1,17 @@
 /**
- *  `MinesweeperGUI` Class
- *   by Teerapat Kraisrisirikul
+ * `MinesweeperGUI` Class
+ * by Teerapat Kraisrisirikul
  */
 
 package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 import javax.imageio.ImageIO;
 
-public class MinesweeperGUI extends MinesweeperCore {
+public class MinesweeperGUI extends MinesweeperCore implements ActionListener {
     private static final String MINE_ICON = "resources/mine.png";
     private static final String FLAG_ICON = "resources/flag.png";
     private static final Color GREEN = new Color(23, 199, 35);
@@ -39,7 +40,7 @@ public class MinesweeperGUI extends MinesweeperCore {
             for (int j = 0; j < columns; j++) {
                 boardCell[i][j] = new JButton();
                 boardCell[i][j].setFont(new Font("Arial", Font.BOLD, 20));
-                boardCell[i][j].addActionListener(new ButtonListener());
+                boardCell[i][j].addActionListener(this);
                 boardPanel.add(boardCell[i][j]);
             }
         }
@@ -51,9 +52,9 @@ public class MinesweeperGUI extends MinesweeperCore {
         restartButton.setFont(new Font("Arial", Font.PLAIN, 14));
         exitButton.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        flagButton.addActionListener(new ButtonListener());
-        restartButton.addActionListener(new ButtonListener());
-        exitButton.addActionListener(new ButtonListener());
+        flagButton.addActionListener(this);
+        restartButton.addActionListener(this);
+        exitButton.addActionListener(this);
 
         messageBox.setFont(new Font("Arial", Font.PLAIN, 16));
         messageBox.setEditable(false);
@@ -120,10 +121,9 @@ public class MinesweeperGUI extends MinesweeperCore {
             boardCell[i][j].setText(" ");
         } else if (boardData[i][j] == -1) {
             try {
-                Image img = ImageIO.read(getClass().getResource(MINE_ICON));
-                boardCell[i][j].setIcon(new ImageIcon(img));
-            } catch (Exception ex) {
-                System.out.println(ex);
+                boardCell[i][j].setIcon(new ImageIcon(ImageIO.read(getClass().getResource(MINE_ICON))));
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         } else {
             boardCell[i][j].setText(Integer.toString(boardData[i][j]));
@@ -135,11 +135,9 @@ public class MinesweeperGUI extends MinesweeperCore {
         if (boardCell[i][j].getIcon() == null && flags > 0) {
             flags--;
             try {
-                Image img = ImageIO.read(getClass().getResource(FLAG_ICON));
-                boardCell[i][j].setIcon(new ImageIcon(img));
-                boardCell[i][j].setEnabled(true);
-            } catch (Exception ex) {
-                System.out.println(ex);
+                boardCell[i][j].setIcon(new ImageIcon(ImageIO.read(getClass().getResource(FLAG_ICON))));
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         } else if (boardCell[i][j].getIcon() != null) {
             flags++;
@@ -238,33 +236,34 @@ public class MinesweeperGUI extends MinesweeperCore {
         System.exit(0);
     }
 
-    private class ButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < columns; j++) {
-                    if (e.getSource() == boardCell[i][j] && gameStatus == 0) {
-                        if (flagMode)
-                            flagCell(i, j);
-                        else
-                            clickCell(i, j);
-
-                        updateFlagsMessage();
-                        updateGameStatus();
-                        updateGameStatusMessage();
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (e.getSource() == boardCell[i][j] && gameStatus == 0) {
+                    if (flagMode) {
+                        flagCell(i, j);
+                    } else {
+                        clickCell(i, j);
                     }
-                }
-            }
 
-            if (e.getSource() == flagButton) {
-                flagMode = !flagMode;
-                updateFlagButton();
-            } else if (e.getSource() == restartButton) {
-                restart();
-            } else if (e.getSource() == exitButton) {
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
-                    exit();
+                    updateFlagsMessage();
+                    updateGameStatus();
+                    updateGameStatusMessage();
                 }
             }
         }
+
+        if (e.getSource() == flagButton) {
+            flagMode = !flagMode;
+            updateFlagButton();
+        } else if (e.getSource() == restartButton) {
+            restart();
+        } else if (e.getSource() == exitButton) {
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
+                exit();
+            }
+        }
     }
+
 }

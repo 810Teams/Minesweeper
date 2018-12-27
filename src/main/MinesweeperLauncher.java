@@ -1,6 +1,6 @@
 /**
- *  `MinesweeperLauncher` Class
- *   by Teerapat Kraisrisirikul
+ * `MinesweeperLauncher` Class
+ * by Teerapat Kraisrisirikul
  */
 
 package main;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public final class MinesweeperLauncher {
+public final class MinesweeperLauncher implements ActionListener {
     private int rows, columns, mines;
     private MinesweeperGUI game;
     private JFrame frame;
@@ -55,8 +55,8 @@ public final class MinesweeperLauncher {
         startButton.setFont(new Font("Arial", Font.PLAIN, 14));
         exitButton.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        startButton.addActionListener(new ButtonListener());
-        exitButton.addActionListener(new ButtonListener());
+        startButton.addActionListener(this);
+        exitButton.addActionListener(this);
 
         // Adding Components
         settingsPanel.add(rowsLabel);
@@ -127,6 +127,7 @@ public final class MinesweeperLauncher {
             JOptionPane.showMessageDialog(null, "Mine amount must not cover over 25% of the board (" + mines + "/" + (int) (rows * columns / 4) + ").");
             return false;
         }
+
         return true;
     }
 
@@ -135,16 +136,15 @@ public final class MinesweeperLauncher {
         System.exit(0);
     }
 
-    private class ButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == startButton) {
-                if (checkValid()) {
-                    start();
-                }
-            } else if (e.getSource() == exitButton) {
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
-                    exit();
-                }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == startButton) {
+            if (checkValid()) {
+                start();
+            }
+        } else if (e.getSource() == exitButton) {
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?") == 0) {
+                exit();
             }
         }
     }

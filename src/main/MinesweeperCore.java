@@ -1,6 +1,6 @@
 /**
- *  `MinesweeperCore` Abstract Class
- *   by Teerapat Kraisrisirikul
+ * `MinesweeperCore` Abstract Class
+ * by Teerapat Kraisrisirikul
  */
 
 package main;
@@ -10,7 +10,7 @@ public abstract class MinesweeperCore {
     protected int[][] boardData;
     protected boolean flagMode;
 
-    protected MinesweeperCore(int rows, int columns, int mines) {
+    public MinesweeperCore(int rows, int columns, int mines) {
         setRows(rows);
         setColumns(columns);
         setMines(mines);
