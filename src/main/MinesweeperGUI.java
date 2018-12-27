@@ -78,6 +78,7 @@ public class MinesweeperGUI extends MinesweeperCore implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setResizable(false);
     }
 
     private void clickCell(int i, int j) {
